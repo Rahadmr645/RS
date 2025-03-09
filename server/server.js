@@ -16,7 +16,7 @@ app.use(express.json());
 
 // all routes
 app.use('/api/user/', userRoutes)
-app.use('/api/user/', postRoutes)
+app.use('/api/user/post/', postRoutes)
 
 
 app.use('/', (req, res) => {
