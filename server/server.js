@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import connectToMongo from './config/db.js';
+import cors from 'cors'
 dotenv.config();
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
@@ -13,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
 app.use(express.json());
-
+app.use(cors())
 // all routes
 app.use('/api/user/', userRoutes)
 app.use('/api/user/post/', postRoutes)

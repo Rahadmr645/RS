@@ -1,0 +1,96 @@
+.lergContainer {
+    width: 100%;
+    height: 100vh;
+    border: 1px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(29px);
+}
+
+
+.loginContainer {
+    width: 300px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border-radius: 8px;
+    background: linear-gradient(to right, green, blue);
+    backdrop-filter: blur(330px);
+}
+
+.loginContainer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.haveAccount {
+    margin-top: 10px;
+    margin-left: 7px;
+}
+
+.haveAccount p {
+    color: white;
+}
+
+.haveAccount p span {
+    color: tomato;
+}
+
+h1 {
+    color: white;
+
+}
+
+.haveAccount p span:hover {
+    border-bottom: 2px solid tomato;
+    cursor: pointer;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 300px;
+
+    font-size: 15px;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+}
+
+.input input {
+    padding: 4px;
+    border: none;
+    border-radius: 5px;
+}
+
+.inputs button {
+    width: 200px;
+    margin-left: 17%;
+    padding: 5px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.inputs button:hover {
+    background-color: black;
+    cursor: pointer;
+    transform: scale(1.02);
+    color: white;
+}
