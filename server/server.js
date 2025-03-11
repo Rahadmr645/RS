@@ -12,6 +12,8 @@ const port = process.env.port;
 connectToMongo();
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
+app.use('/postImage', express.static('postImage'));
+
 
 app.use(express.json());
 app.use(cors())

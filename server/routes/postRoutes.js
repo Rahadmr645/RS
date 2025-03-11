@@ -12,12 +12,12 @@ router.post('/create', authenticatedToken, imageUpload.single('image'), async (r
 
     try {
         const { text } = req.body;
-        const { image } = req.file;
+        const image = req.file ? req.file.filename : null;
         const userId = req.userId; // get the userid from the authenticated token
-        const post = await Post({
+        const post = new Post({
             text,
             userId,
-            image: req.file.filename,
+            image,
         });
 
         await post.save();
@@ -29,7 +29,7 @@ router.post('/create', authenticatedToken, imageUpload.single('image'), async (r
 });
 
 // fetch all the post of perticuler user
-router.get('/posts', authenticatedToken, async (req, res) => {
+router.get('/user-posts', authenticatedToken, async (req, res) => {
 
     try {
         const userId = req.userId;
@@ -46,7 +46,6 @@ router.get('/posts', authenticatedToken, async (req, res) => {
 
 
 
-
 // Delete post 
 router.delete('/delete', async (req, res) => {
 
@@ -55,7 +54,7 @@ router.delete('/delete', async (req, res) => {
         const { id } = req.body;
 
         // find the post
-        await Post.findByIdAndDelete({ id })
+        await Post.findByIdAndDelete(id)
 
         res.status(200).json({ message: "Post Deleted successfully" })
 
@@ -66,6 +65,15 @@ router.delete('/delete', async (req, res) => {
 })
 
 
+// fetch all the post 
+router.get('/all-posts', async (req, res) => {
+    try {
+        const posts = await Post.find();
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ message: "faild to fetch posts" })
+    }
+})
 
 
 

@@ -1,8 +1,8 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useRef } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
-import base64url from 'base64url'
+// import base64url from 'base64url'
 
 
 
@@ -13,7 +13,8 @@ export const Context = createContext();
 export const ContextProvider = ({ children }) => {
 
     const [currState, setCurrState] = useState('Signup');
-
+    const [posts,setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
     const [userFormData, setUserFormData] = useState({
@@ -48,15 +49,15 @@ export const ContextProvider = ({ children }) => {
 
         e.preventDefault();
         try {
-            let respons;
+            let response;
             const formData = new FormData();
             if (currState === 'Signup') {
 
                 formData.append("name", userFormData.name);
                 formData.append("email", userFormData.email);
                 formData.append("password", userFormData.password); formData.append("image", userFormData.image);
-                respons = await axios.post(`${URL}/api/user/create`, formData)
-                alert(respons.data.message)
+                response = await axios.post(`${URL}/api/user/create`, formData)
+                alert(response.data.message)
 
                 setUserFormData({
                     name: '',
@@ -69,15 +70,15 @@ export const ContextProvider = ({ children }) => {
                     fileInputRef.current.value = '';
                 }
 
-                localStorage.setItem('token', respons.data.token)
+                localStorage.setItem('token', response.data.token)
 
                 navigate('/dashboard');
             } else {
-                respons = await axios.post(`${URL}/api/user/login`, {
+                response = await axios.post(`${URL}/api/user/login`, {
                     email: userFormData.email,
                     password: userFormData.password,
                 })
-                alert(respons.data.message)
+                alert(response.data.message)
             }
             navigate('/dashboard')
         } catch (error) {
@@ -97,12 +98,11 @@ export const ContextProvider = ({ children }) => {
             const parts = token.split('.');
 
             if (parts.length !== 3) {
-                throw new error('Invalid error')
+                throw new Error('Invalid error')
             }
             const headerBase = parts[0];
             const payloadBase = parts[1];
             const signatureBase = parts[2];
-
 
 
             const header = JSON.parse(atob(headerBase.replace(/_/g, '/').replace(/-/g, '+')));
@@ -119,6 +119,29 @@ export const ContextProvider = ({ children }) => {
     }
 
 
+
+
+    // fetch all the post 
+    const fetchPosts = async () => {
+        try {
+
+            setLoading(true);
+            const response = await axios.get(`${URL}/api/user/post/all-posts`);
+            // console.log("fetched post", response.data);
+            setPosts(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching posts:', error.response?.data?.message || error.message);
+            setLoading(false);
+        }
+    }
+
+
+    // call fetchPost when  the component loads
+    useEffect(() => {
+        fetchPosts();
+    }, [])
+
     const contextValu = {
         currState,
         setCurrState,
@@ -126,6 +149,9 @@ export const ContextProvider = ({ children }) => {
         onSubmitHandler,
         userFormData,
         decodeToken,
+        fetchPosts,
+        posts,
+        loading,
 
     }
 

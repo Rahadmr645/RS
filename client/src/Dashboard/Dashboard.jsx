@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/StoreContext'
+import Posts from '../Posts/Posts';
+
 
 const Dashboard = () => {
   const { decodeToken } = useContext(Context);
@@ -14,16 +16,16 @@ const Dashboard = () => {
       setUserData(decoded?.payload || null)
     }
   }, [])
-
   const logout = () => {
     localStorage.removeItem('token');
-    
+
   }
 
   return (
     <div>
       <button onClick={logout} >Logout</button>
       <p>{userData?.name}</p>
+      <Posts />
     </div>
   )
 }
