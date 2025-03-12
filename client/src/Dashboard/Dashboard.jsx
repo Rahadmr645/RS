@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/StoreContext'
 import Posts from '../Posts/Posts';
-
+import Navbar from '../Navbar/Navbar'
 
 const Dashboard = () => {
   const { decodeToken } = useContext(Context);
@@ -23,6 +23,7 @@ const Dashboard = () => {
 
   return (
     <div>
+       <Navbar/>
       <button onClick={logout} >Logout</button>
       <p>{userData?.name}</p>
       <Posts />

@@ -16,7 +16,7 @@ app.use('/postImage', express.static('postImage'));
 
 
 app.use(express.json());
-app.use(cors())
+app.use(cors({origin : "*"}))
 // all routes
 app.use('/api/user/', userRoutes)
 app.use('/api/user/post/', postRoutes)

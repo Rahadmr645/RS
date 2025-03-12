@@ -1,0 +1,69 @@
+
+@media (max-width: 475px) {
+   .navContainer {
+       width: 475px ;
+       height: 25vh;
+       display: flex;
+       flex-direction: column;
+       
+   }
+    .topNav{
+     width: 100%;
+     height: 5vh;
+     
+     display: flex;
+     justify-content: center ;
+     gap: 150px;
+     padding: 10px 0px 10px 0px;
+     margin-right: 20px;
+     align-items: center;
+   }
+   .topNav .topIcon {
+     display: flex;
+     gap: 30px;
+   }
+    .topNav .topIcon p,.bottomNav p,.profileNav p{
+      font-size: 40px;
+      
+    }
+    .bottomNav{
+      display: flex;
+      width: 100%;
+      height: 7vh;
+      
+      justify-content: space-between ;
+      align-items: center;
+      
+    }
+    .profileNav{
+      display: flex;
+      width: 100%;
+      align-items: center;
+      margin-top: 10px;
+      justify-content: space-evenly;
+    }
+   .profile ,.media{
+     width: 20%;
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+     justify-content: center;
+     
+   }
+   .media p,h5 {
+     margin-left: 15px;
+   }
+  .input {
+    width: 60%;
+  }
+  
+  
+  .input input {
+    width: 100%;
+    height: 3vh;
+    padding: 10px;
+    border: none;
+    margin-bottom: 10px;
+    border-radius: 10px;
+  }
+}
