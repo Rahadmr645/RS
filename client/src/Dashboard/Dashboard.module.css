@@ -1,0 +1,24 @@
+.dashboardContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+}
+.itemContainer{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+ .left,.right {
+    width: 30%;
+    border: 1px solid red;
+}
+
+.middle{
+    width: 40%;
+    border: 1px solid green;
+    padding: 20px;
+    background: rgb(167, 163, 163);
+    border: none;
+    border-radius: 10px;
+}

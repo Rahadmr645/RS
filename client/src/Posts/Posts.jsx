@@ -1,7 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { Context } from '../context/StoreContext';
-
-const Posts = () => {
+import styles from './Post.module.css';
+import { SlLike } from "react-icons/sl";
+import { FaComments } from "react-icons/fa";
+import { IoIosShareAlt } from "react-icons/io";
+const Posts = ({ className }) => {
     const { posts, fetchPosts, loading } = useContext(Context);
 
     useEffect(() => {
@@ -14,40 +17,29 @@ const Posts = () => {
     }, [posts]);
 
     return (
-        <div>
+        <div className={`${className}`}>
             <h2>All Posts</h2>
             {loading && <p>Loading posts...</p>}
             {!posts?.length && <p>No posts available</p>}
 
             {posts?.map((post) => (
-                <div key={post._id} style={{ border: '1px solid red', padding: '10px', marginBottom: '10px' }}>
-
-                    {/* ✅ Fix Image Rendering */}
-                    {/* {post.image ? (
-                        <img
-                            src={`http://localhost:4003/postImage/${post.image}`}
-                            alt='Post'
-                            width="50"
-                            height="50"
-                            style={{ borderRadius: "50%" }}
-                        />
-                    ) : (
-                        <p>Post image not available</p>
-                    )} */}
-
-                    {/* ✅ Fix User ID Rendering */}
+                <div className={styles.postBox} key={post._id} style={{ border: '1px solid red', padding: '10px', marginBottom: '10px' }}>
                     <p>User Id : {post.userId || "User ID not available"}</p>
-
-                    {/* ✅ Post Text */}
                     <p>{post.text}</p>
-
-                    {/* ✅ Fix Another Image Rendering  */}
                     {post.image ? (
-                        <img
-                            src={`http://localhost:4003/postImage/${post.image}`}
-                            alt='Post'
-                            width='300'
-                        />
+                        <div className={styles.imageBox}>
+                            <img
+                                src={`http://localhost:4003/postImage/${post.image}`}
+                                alt='Post'
+                                width='300'
+                            />
+                            <div className={styles.reactIcons}>
+                            <p><SlLike /></p>
+                            <p><FaComments /></p>
+                            <p><IoIosShareAlt /></p>
+                            </div>
+                        </div>
+
                     ) : (
                         <p>Post image not available</p>
                     )}

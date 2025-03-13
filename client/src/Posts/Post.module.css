@@ -1,0 +1,40 @@
+
+.postBox{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  
+}
+.postBox p {
+    max-width: 200px;
+    display: flex;
+    justify-content: left;
+}
+
+.imageBox{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.imageBox>img {
+    border: none;
+    border-radius: 10px;
+   
+}
+.reactIcons{
+    display: flex;
+    gap: 50px;
+    border-radius: 10px;
+    justify-content: space-between;
+    background: rgb(192, 185, 185);
+    padding: 5px;
+}
+.reactIcons p {
+    font-size: 20px;
+    cursor: pointer;
+}
