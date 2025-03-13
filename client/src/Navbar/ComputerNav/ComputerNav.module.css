@@ -1,0 +1,76 @@
+.navContainer {
+    display: flex;
+    width: 100%;
+ 
+    background: rgb(114, 114, 114);
+}
+
+.itemContainer {
+    width: 100%;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+
+}
+
+.itemContainer p {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.rightContainer {
+    width: 25%;
+   
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+   justify-content: right;
+}
+.leftContainer {
+    width: 25%;
+ 
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+}
+.leftContainer p {
+    margin-top: 10px;
+}
+
+.middleContainer {
+    width: 50%;
+    justify-content: center;
+    gap: 50px;
+    display: flex;
+    align-items: center;
+
+}
+.select {
+    border-bottom: 3px solid black;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.inputBox {
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+.inputBox input {
+    padding: 7px;
+    padding-left: 30px;
+    border: none;
+    width: 200px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.inputBox .i {
+    font-size: 25px;
+    position: absolute;
+    display: flex;
+}
