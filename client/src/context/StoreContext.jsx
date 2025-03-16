@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { useRef } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
@@ -13,10 +13,18 @@ export const Context = createContext();
 export const ContextProvider = ({ children }) => {
 
     const [currState, setCurrState] = useState('Signup');
-    const [posts,setPosts] = useState([]);
+    const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    const [showPostForm, setShowPostForm] = useState(false);
+
+    const [postForm, setPostForm] = useState({
+        text: '',
+        image: '',
+    })
+
+
     const [userFormData, setUserFormData] = useState({
         name: '',
         email: '',
@@ -43,6 +51,23 @@ export const ContextProvider = ({ children }) => {
         }
     }
 
+    const onPostChangeHandler = (e) => {
+        const { name, value, files } = e.target;
+
+        if (name === 'image') {
+            setPostForm((prev) => ({
+
+                ...prev,
+                image: files[0],
+            }));
+        } else {
+            setPostForm((prev) => ({
+                ...prev,
+                [name]: value,
+            }))
+        }
+    }
+
     // onsubmithandler
 
     const onSubmitHandler = async (e) => {
@@ -55,7 +80,8 @@ export const ContextProvider = ({ children }) => {
 
                 formData.append("name", userFormData.name);
                 formData.append("email", userFormData.email);
-                formData.append("password", userFormData.password); formData.append("image", userFormData.image);
+                formData.append("password", userFormData.password);
+                formData.append("image", userFormData.image);
                 response = await axios.post(`${URL}/api/user/create`, formData)
                 alert(response.data.message)
 
@@ -120,7 +146,6 @@ export const ContextProvider = ({ children }) => {
 
 
 
-
     // fetch all the post 
     const fetchPosts = async () => {
         try {
@@ -135,6 +160,50 @@ export const ContextProvider = ({ children }) => {
             setLoading(false);
         }
     }
+
+
+    // for deleting post
+    const handleDeletePost = async (postId) => {
+        try {
+            const response = await axios.delete(`${URL}/api/user/post/delete`, {
+                data: { id: postId } // axios requires data to send  body in delete request
+            });
+            alert("Post deleted successfully");
+
+            setPosts(posts.filter(post => post._id !== postId));
+
+        } catch (error) {
+            console.error("Failed to delete post:", error);
+            alert("Failed to delete post:" + error.response?.data?.message)
+        }
+    }
+
+    // onsubmit for create post 
+    const PostSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            let response;
+            const postForm = new PostData();
+
+            postForm.append = ("text", setPostForm.text);
+            postForm.append = ("image", setPostForm.image);
+
+            response = await axios.post(`${URL}/api/user/post/create`, postForm);
+            alert(response.data.message);
+
+            setPostForm({
+                text: '',
+                image: '',
+            });
+
+            setShowPostForm(false);
+        } catch (error) {
+            console.error('error is:', error.message)
+        }
+    }
+
+
 
 
     // call fetchPost when  the component loads
@@ -152,7 +221,13 @@ export const ContextProvider = ({ children }) => {
         fetchPosts,
         posts,
         loading,
-
+        handleDeletePost,
+        setPostForm,
+        postForm,
+        showPostForm,
+        setShowPostForm,
+        onPostChangeHandler,
+        PostSubmit,
     }
 
 

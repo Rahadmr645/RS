@@ -5,7 +5,7 @@ import { SlLike } from "react-icons/sl";
 import { FaComments } from "react-icons/fa";
 import { IoIosShareAlt } from "react-icons/io";
 const Posts = ({ className }) => {
-    const { posts, fetchPosts, loading } = useContext(Context);
+    const { posts, fetchPosts, loading, handleDeletePost } = useContext(Context);
 
     useEffect(() => {
         fetchPosts();
@@ -34,16 +34,17 @@ const Posts = ({ className }) => {
                                 width='300'
                             />
                             <div className={styles.reactIcons}>
-                            <p><SlLike /></p>
-                            <p><FaComments /></p>
-                            <p><IoIosShareAlt /></p>
+                                <p><SlLike /></p>
+                                <p><FaComments /></p>
+                                <p><IoIosShareAlt /></p>
                             </div>
+
                         </div>
 
                     ) : (
                         <p>Post image not available</p>
                     )}
-
+                    <button onClick={() => handleDeletePost(post._id)}>Delete Post</button>
                 </div>
             ))}
         </div>

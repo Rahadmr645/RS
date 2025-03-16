@@ -1,0 +1,25 @@
+.postFormContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid green;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+    filter: blur(30);
+}
+
+.formPostContainer {
+    width: 400px;
+    height: 200px;
+    background-color: green;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+}

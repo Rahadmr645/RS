@@ -9,3 +9,6 @@ body {
   background-color: gray;
   font-family: monospace;
 }
+button {
+  cursor: pointer;
+}
