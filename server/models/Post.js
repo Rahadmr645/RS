@@ -16,8 +16,17 @@ const postSchema = mongoose.Schema({
     image: {
         type: String,
         required: true
-    }
-})
+    },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // array of users who liked
+    comments: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+            text: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now }
+        }
+    ]
+
+}, { timestamps: true })
 const Post = mongoose.model('post', postSchema);
 
 export default Post;
