@@ -147,37 +147,80 @@ export const ContextProvider = ({ children }) => {
         }
     };
 
-    // Submit post form
+    // // Submit post form
+    // const PostSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const formData = new FormData();
+    //         formData.append("text", postForm.text);
+
+    //         if (postForm.image instanceof File) {
+    //             formData.append("image", postForm.image);
+    //         } else {
+    //             console.warn("Image is not a file:", postForm.image);
+    //         }
+
+    //         const token = localStorage.getItem('token');
+    //         if (!token) {
+    //             alert('User not authenticated. Please log in.');
+    //             return;
+    //         }
+
+    //         const response = await axios.post(`${URL}/api/user/post/create`, formData, {
+    //             headers: { 'Authorization': `Bearer ${token}` },
+    //         });
+
+    //         alert(response.data.message);
+    //         await fetchPosts();
+    //         setPostForm({ text: '', image: null });
+    //         setShowPostForm(false);
+    //         navigate('/dashboard');
+    //     } catch (error) {
+    //         console.error('Error creating post:', error.response?.data?.message || error.message);
+    //         alert("Error creating post: " + (error.response?.data?.message || error.message));
+    //     }
+    // };
+
     const PostSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const formData = new FormData();
             formData.append("text", postForm.text);
-
-            if (postForm.image instanceof File) {
+    
+            if (postForm.image && postForm.image instanceof File) {
                 formData.append("image", postForm.image);
             } else {
-                console.warn("Image is not a file:", postForm.image);
+                console.warn("Invalid image format:", postForm.image);
             }
-
+    
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('User not authenticated. Please log in.');
                 return;
             }
-
+    
             const response = await axios.post(`${URL}/api/user/post/create`, formData, {
-                headers: { 'Authorization': `Bearer ${token}` },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-
+    
+            console.log("Server Response:", response);
             alert(response.data.message);
             await fetchPosts();
-            setPostForm({ text: '', image: null });
+            
+            setPostForm({ text: '', image: '' }); // Ensure proper reset
             setShowPostForm(false);
-            navigate('/dashboard');
+
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 100);  // Add a small delay before navigation
+    
+    
         } catch (error) {
-            console.error('Error creating post:', error.response?.data?.message || error.message);
+            console.error('Error creating post:', error.response?.data || error.message);
             alert("Error creating post: " + (error.response?.data?.message || error.message));
         }
     };
@@ -199,9 +242,9 @@ export const ContextProvider = ({ children }) => {
             alert(response.data.message);
             setAllUser(allUser.filter(user => user._id !== userId));
         } catch (error) {
-            console.error('faild to delte user',error.message)
+            console.error('faild to delte user', error.message)
         }
-    
+
     }
 
 
@@ -215,6 +258,13 @@ export const ContextProvider = ({ children }) => {
         console.log(allUser);
     }, [allUser])
 
+    const updateLikes = (postId) => {
+        setPosts((prevPosts) =>
+            prevPosts.map((post) =>
+                post._id === postId ? { ...post, likes: (post.likes || 0) + 1 } : post
+            )
+        );
+    };
     const contextValue = {
         currState,
         setCurrState,
@@ -235,6 +285,7 @@ export const ContextProvider = ({ children }) => {
         allUser,
         setAllUser,
         deleteUser,
+        updateLikes,
     };
 
     return (
