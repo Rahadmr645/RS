@@ -3,6 +3,8 @@ import User from '../models/Users.js';
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
 dotenv.config();
+import path from 'path'
+import fs from 'fs';
 
 import jwt from 'jsonwebtoken';
 import upload from '../middleware/multer.js';
@@ -39,7 +41,7 @@ router.post('/create', upload.single('image'), async (req, res) => {
         });
 
         // jsonwebtoken 
-        const token = jwt.sign({ id: newUser._id, name: newUser.name }, SECRET_KEY, { expiresIn: "1d" })
+        const token = jwt.sign({ id: newUser._id, name: newUser.name,image: newUser.image }, SECRET_KEY, { expiresIn: "1d" })
 
         await newUser.save();
         res.status(200).json({ message: "User create successfully", newUser, token })
@@ -76,7 +78,43 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: "Enternal error", error: error.message })
     }
 
+
 })
 
 
+// fetch all user 
+router.get('/allUser', async (req, res) => {
+    try {
+
+        const allUser = await User.find();
+        res.status(200).json({ user: allUser })
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+})
+
+
+// delete user
+router.delete('/delete', async (req, res) => {
+
+    try {
+        const { id } = req.body;
+
+        const users = await User.findById(id);
+
+        // delete the image 
+        const imagePath = path.join('uploads', users.image);
+
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        };
+
+        await User.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "User Deleted Successfully" })
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+})
 export default router;

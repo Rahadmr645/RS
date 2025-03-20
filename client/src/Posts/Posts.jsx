@@ -24,23 +24,35 @@ const Posts = ({ className }) => {
 
             {posts?.map((post) => (
                 <div className={styles.postBox} key={post._id} style={{ border: '1px solid red', padding: '10px', marginBottom: '10px' }}>
-                    <p>User Id : {post.userId || "User ID not available"}</p>
+                   
+                    {post.userId ? (
+                        <>
+                            <p>User Name: {post.userId.name}</p>
+                            <p>Email: {post.userId.email}</p>
+                            <img style={{width:'30px',height:'30px',borderRadius:'50%',border:'1px solid green'}} src={`http://localhost:4003/uploads/${post.userId.image}`} alt="User" />
+                        </>
+                    ) : (
+                        <p>User data not available</p>
+                    )}
+
+            
                     <p>{post.text}</p>
+                    <p>Post ID: {post._id}</p>
+
+                   
                     {post.image ? (
                         <div className={styles.imageBox}>
                             <img
                                 src={`http://localhost:4003/postImage/${post.image}`}
-                                alt='Post'
-                                width='300'
+                                alt="Post"
+                                width="300"
                             />
                             <div className={styles.reactIcons}>
                                 <p><SlLike /></p>
                                 <p><FaComments /></p>
                                 <p><IoIosShareAlt /></p>
                             </div>
-
                         </div>
-
                     ) : (
                         <p>Post image not available</p>
                     )}

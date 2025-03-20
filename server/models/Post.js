@@ -17,7 +17,7 @@ const postSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // array of users who liked
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }], // array of users who liked
     comments: [
         {
             user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },

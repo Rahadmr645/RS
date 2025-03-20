@@ -1,217 +1,221 @@
-import { createContext, use, useEffect, useState } from "react";
-import { useRef } from "react";
-import axios from 'axios'
+import { createContext, useEffect, useState, useRef } from "react";
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-// import base64url from 'base64url'
-
-
-
 
 export const Context = createContext();
 
-
 export const ContextProvider = ({ children }) => {
-
     const [currState, setCurrState] = useState('Signup');
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    const [allUser, setAllUser] = useState([]);
     const [showPostForm, setShowPostForm] = useState(false);
 
     const [postForm, setPostForm] = useState({
         text: '',
-        image: '',
-    })
-
+        image: null,
+    });
 
     const [userFormData, setUserFormData] = useState({
         name: '',
         email: '',
         password: '',
         image: '',
-    })
-    const URL = 'http://localhost:4003'
+    });
 
-    // onChangeHandler
+    const URL = 'http://localhost:4003';
+
+    // onChangeHandler for user form
     const onChangeHandler = (e) => {
         const { name, value, files } = e.target;
 
         if (name === 'image') {
-            setUserFormData((prev) => ({
-
+            setUserFormData(prev => ({
                 ...prev,
                 image: files[0],
             }));
         } else {
-            setUserFormData((prev) => ({
+            setUserFormData(prev => ({
                 ...prev,
                 [name]: value,
-            }))
+            }));
         }
-    }
+    };
 
+    // onChangeHandler for post form
     const onPostChangeHandler = (e) => {
         const { name, value, files } = e.target;
 
         if (name === 'image') {
-            setPostForm((prev) => ({
-
+            setPostForm(prev => ({
                 ...prev,
                 image: files[0],
             }));
         } else {
-            setPostForm((prev) => ({
+            setPostForm(prev => ({
                 ...prev,
                 [name]: value,
-            }))
+            }));
         }
-    }
+    };
 
-    // onsubmithandler
-
+    // onSubmitHandler for user form (Signup/Login)
     const onSubmitHandler = async (e) => {
-
         e.preventDefault();
         try {
             let response;
             const formData = new FormData();
             if (currState === 'Signup') {
-
                 formData.append("name", userFormData.name);
                 formData.append("email", userFormData.email);
                 formData.append("password", userFormData.password);
                 formData.append("image", userFormData.image);
-                response = await axios.post(`${URL}/api/user/create`, formData)
-                alert(response.data.message)
+
+                response = await axios.post(`${URL}/api/user/create`, formData);
+                alert(response.data.message);
 
                 setUserFormData({
                     name: '',
                     email: '',
                     password: '',
                     image: '',
-                })
+                });
 
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
 
-                localStorage.setItem('token', response.data.token)
-
+                localStorage.setItem('token', response.data.token);
                 navigate('/dashboard');
             } else {
                 response = await axios.post(`${URL}/api/user/login`, {
                     email: userFormData.email,
                     password: userFormData.password,
-                })
-                alert(response.data.message)
+                });
+                alert(response.data.message);
+                navigate('/dashboard');
             }
-            navigate('/dashboard')
         } catch (error) {
-            alert(error.respons?.data?.message || 'an error ')
+            alert(error.response?.data?.message || 'An error occurred');
         }
-    }
+    };
 
-
-
-
-
-
-    // decode the token
+    // Decode token for validation
     const decodeToken = (token) => {
         try {
-            // splits the token in the header payload and signature
             const parts = token.split('.');
-
             if (parts.length !== 3) {
-                throw new Error('Invalid error')
+                throw new Error('Invalid token format');
             }
+
             const headerBase = parts[0];
             const payloadBase = parts[1];
-            const signatureBase = parts[2];
-
-
             const header = JSON.parse(atob(headerBase.replace(/_/g, '/').replace(/-/g, '+')));
             const payload = JSON.parse(atob(payloadBase.replace(/_/g, '/').replace(/-/g, "+")));
-            return {
-                header: header,
-                payload: payload
-            }
-
+            return { header, payload };
         } catch (error) {
-            console.log("erro is ", error.message)
+            console.log("Error decoding token:", error.message);
         }
+    };
 
-    }
-
-
-
-    // fetch all the post 
+    // Fetch all posts
     const fetchPosts = async () => {
         try {
-
             setLoading(true);
             const response = await axios.get(`${URL}/api/user/post/all-posts`);
-            // console.log("fetched post", response.data);
             setPosts(response.data);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching posts:', error.response?.data?.message || error.message);
             setLoading(false);
         }
-    }
+    };
 
-
-    // for deleting post
+    // Handle post deletion
     const handleDeletePost = async (postId) => {
         try {
             const response = await axios.delete(`${URL}/api/user/post/delete`, {
-                data: { id: postId } // axios requires data to send  body in delete request
+                data: { id: postId },
             });
             alert("Post deleted successfully");
-
             setPosts(posts.filter(post => post._id !== postId));
-
         } catch (error) {
             console.error("Failed to delete post:", error);
-            alert("Failed to delete post:" + error.response?.data?.message)
+            alert("Failed to delete post: " + error.response?.data?.message);
         }
-    }
+    };
 
-    // onsubmit for create post 
+    // Submit post form
     const PostSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            let response;
-            const postForm = new PostData();
+            const formData = new FormData();
+            formData.append("text", postForm.text);
 
-            postForm.append = ("text", setPostForm.text);
-            postForm.append = ("image", setPostForm.image);
+            if (postForm.image instanceof File) {
+                formData.append("image", postForm.image);
+            } else {
+                console.warn("Image is not a file:", postForm.image);
+            }
 
-            response = await axios.post(`${URL}/api/user/post/create`, postForm);
-            alert(response.data.message);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('User not authenticated. Please log in.');
+                return;
+            }
 
-            setPostForm({
-                text: '',
-                image: '',
+            const response = await axios.post(`${URL}/api/user/post/create`, formData, {
+                headers: { 'Authorization': `Bearer ${token}` },
             });
 
+            alert(response.data.message);
+            await fetchPosts();
+            setPostForm({ text: '', image: null });
             setShowPostForm(false);
+            navigate('/dashboard');
         } catch (error) {
-            console.error('error is:', error.message)
+            console.error('Error creating post:', error.response?.data?.message || error.message);
+            alert("Error creating post: " + (error.response?.data?.message || error.message));
+        }
+    };
+
+    const fetchAllUser = async () => {
+
+        try {
+            const respons = await axios.get(`${URL}/api/user/allUser`);
+            setAllUser(respons.data.user);
+        } catch (error) {
+            alert(respons.data.error)
         }
     }
 
+    // Delte the user 
+    const deleteUser = async (userId) => {
+        try {
+            const response = await axios.delete(`${URL}/api/user/delete`, { data: { id: userId } })
+            alert(response.data.message);
+            setAllUser(allUser.filter(user => user._id !== userId));
+        } catch (error) {
+            console.error('faild to delte user',error.message)
+        }
+    
+    }
 
 
-
-    // call fetchPost when  the component loads
+    // Fetch posts on component load
     useEffect(() => {
         fetchPosts();
-    }, [])
+        fetchAllUser();
+    }, []);
 
-    const contextValu = {
+    useEffect(() => {
+        console.log(allUser);
+    }, [allUser])
+
+    const contextValue = {
         currState,
         setCurrState,
         onChangeHandler,
@@ -228,13 +232,14 @@ export const ContextProvider = ({ children }) => {
         setShowPostForm,
         onPostChangeHandler,
         PostSubmit,
-    }
-
-
+        allUser,
+        setAllUser,
+        deleteUser,
+    };
 
     return (
-        <Context.Provider value={contextValu} >
+        <Context.Provider value={contextValue}>
             {children}
         </Context.Provider>
-    )
-}
+    );
+};

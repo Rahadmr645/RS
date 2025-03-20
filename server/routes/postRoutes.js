@@ -2,6 +2,8 @@ import express from "express";
 import Post from "../models/Post.js";
 import authenticatedToken from "../middleware/authenticatedToken.js";
 import imageUpload from "../middleware/postMulter.js";
+import path from 'path'
+import fs from 'fs'
 
 const router = express.Router();
 
@@ -53,6 +55,17 @@ router.delete('/delete', async (req, res) => {
 
         const { id } = req.body;
 
+
+        const posts = await Post.findById(id);
+        // delete the image 
+
+        const imagePath = path.join('postImage', posts.image);
+
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath)
+        }
+
+
         // find the post
         await Post.findByIdAndDelete(id)
 
@@ -68,7 +81,7 @@ router.delete('/delete', async (req, res) => {
 // fetch all the post 
 router.get('/all-posts', async (req, res) => {
     try {
-        const posts = await Post.find();
+        const posts = await Post.find().populate('userId', 'name email image');;
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ message: "faild to fetch posts" })
