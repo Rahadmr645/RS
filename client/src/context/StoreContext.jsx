@@ -109,7 +109,6 @@ export const ContextProvider = ({ children }) => {
             if (parts.length !== 3) {
                 throw new Error('Invalid token format');
             }
-
             const headerBase = parts[0];
             const payloadBase = parts[1];
             const header = JSON.parse(atob(headerBase.replace(/_/g, '/').replace(/-/g, '+')));
@@ -147,78 +146,44 @@ export const ContextProvider = ({ children }) => {
         }
     };
 
-    // // Submit post form
-    // const PostSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append("text", postForm.text);
-
-    //         if (postForm.image instanceof File) {
-    //             formData.append("image", postForm.image);
-    //         } else {
-    //             console.warn("Image is not a file:", postForm.image);
-    //         }
-
-    //         const token = localStorage.getItem('token');
-    //         if (!token) {
-    //             alert('User not authenticated. Please log in.');
-    //             return;
-    //         }
-
-    //         const response = await axios.post(`${URL}/api/user/post/create`, formData, {
-    //             headers: { 'Authorization': `Bearer ${token}` },
-    //         });
-
-    //         alert(response.data.message);
-    //         await fetchPosts();
-    //         setPostForm({ text: '', image: null });
-    //         setShowPostForm(false);
-    //         navigate('/dashboard');
-    //     } catch (error) {
-    //         console.error('Error creating post:', error.response?.data?.message || error.message);
-    //         alert("Error creating post: " + (error.response?.data?.message || error.message));
-    //     }
-    // };
-
+    // post submit
     const PostSubmit = async (e) => {
         e.preventDefault();
         try {
             const formData = new FormData();
             formData.append("text", postForm.text);
-    
+
             if (postForm.image && postForm.image instanceof File) {
                 formData.append("image", postForm.image);
             } else {
                 console.warn("Invalid image format:", postForm.image);
             }
-    
+
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('User not authenticated. Please log in.');
                 return;
             }
-    
+
             const response = await axios.post(`${URL}/api/user/post/create`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
-    
+
             console.log("Server Response:", response);
             alert(response.data.message);
             await fetchPosts();
-            
+
             setPostForm({ text: '', image: '' }); // Ensure proper reset
             setShowPostForm(false);
 
             setTimeout(() => {
                 navigate('/dashboard');
             }, 100);  // Add a small delay before navigation
-    
-    
+
+
         } catch (error) {
             console.error('Error creating post:', error.response?.data || error.message);
             alert("Error creating post: " + (error.response?.data?.message || error.message));
@@ -248,6 +213,38 @@ export const ContextProvider = ({ children }) => {
     }
 
 
+
+    // toggleLike 
+
+    const toggleLike = async (postId) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('User not authincated Please log in ');
+                return;
+            }
+
+
+            const response = await axios.put(
+                `${URL}/api/user/post/like/${postId}`,
+                {},
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                }
+            );
+
+            alert(response.data.message); // show success or failure message
+            fetchPosts();
+
+        } catch (error) {
+            console.error('Error  liking/unliking post:', error.response?.data || error.message);
+            alert('Error liking/unliking post:' + (error.response?.data?.message || error.message));
+        }
+    }
+
+
     // Fetch posts on component load
     useEffect(() => {
         fetchPosts();
@@ -258,13 +255,9 @@ export const ContextProvider = ({ children }) => {
         console.log(allUser);
     }, [allUser])
 
-    const updateLikes = (postId) => {
-        setPosts((prevPosts) =>
-            prevPosts.map((post) =>
-                post._id === postId ? { ...post, likes: (post.likes || 0) + 1 } : post
-            )
-        );
-    };
+
+
+
     const contextValue = {
         currState,
         setCurrState,
@@ -285,7 +278,7 @@ export const ContextProvider = ({ children }) => {
         allUser,
         setAllUser,
         deleteUser,
-        updateLikes,
+        toggleLike,
     };
 
     return (

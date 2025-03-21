@@ -4,9 +4,10 @@ import styles from './Post.module.css';
 import { SlLike } from "react-icons/sl";
 import { FaComments } from "react-icons/fa";
 import { IoIosShareAlt } from "react-icons/io";
+
 const Posts = ({ className }) => {
-    const { posts, fetchPosts, loading, handleDeletePost,updateLikes } = useContext(Context);
-    // const [likes, setLikes] = useState(0);
+    const { posts, fetchPosts, loading, handleDeletePost, toggleLike } = useContext(Context);
+
     useEffect(() => {
         fetchPosts();
     }, []);
@@ -29,16 +30,15 @@ const Posts = ({ className }) => {
                         <>
                             <p>User Name: {post.userId.name}</p>
                             <p>Email: {post.userId.email}</p>
+                            <p>Likes: {post.likes.length}</p> {/* Corrected here */}
                             <img style={{ width: '30px', height: '30px', borderRadius: '50%', border: '1px solid green' }} src={`http://localhost:4003/uploads/${post.userId.image}`} alt="User" />
                         </>
                     ) : (
                         <p>User data not available</p>
                     )}
 
-
                     <p>{post.text}</p>
                     <p>Post ID: {post._id}</p>
-
 
                     {post.image ? (
                         <div className={styles.imageBox}>
@@ -49,8 +49,12 @@ const Posts = ({ className }) => {
                             />
                             <div className={styles.reactIcons}>
                                 <div className={styles.likes}>
-                                    <p onClick={() => updateLikes(post._id)} ><SlLike /></p>
-                                    <p>{likes}</p>
+                                    <button onClick={() => toggleLike(post._id)}>
+                                       
+                                    {post.likes.includes(localStorage.getItem('userId')) ? 'like' : 'UnLike'}
+                                        
+                                    </button>
+                                    <span>{post.likes.length} Likes</span> {/* Corrected here */}
                                 </div>
                                 <p><FaComments /></p>
                                 <p><IoIosShareAlt /></p>

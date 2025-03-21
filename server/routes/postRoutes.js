@@ -4,6 +4,7 @@ import authenticatedToken from "../middleware/authenticatedToken.js";
 import imageUpload from "../middleware/postMulter.js";
 import path from 'path'
 import fs from 'fs'
+import { toggleLikePost } from "../likeController/likesController.js";
 
 const router = express.Router();
 
@@ -88,6 +89,9 @@ router.get('/all-posts', async (req, res) => {
     }
 })
 
+
+// Route for liking/unliking a post
+router.put('/like/:postId', authenticatedToken, toggleLikePost);
 
 
 
