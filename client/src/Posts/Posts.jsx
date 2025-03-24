@@ -54,7 +54,7 @@ const Posts = ({ className }) => {
                                     {post.likes.includes(localStorage.getItem('userId')) ? 'like' : 'UnLike'}
                                         
                                     </button>
-                                    <span>{post.likes.length} Likes</span> {/* Corrected here */}
+                                    <span>{post.likes.length} Likes</span> 
                                 </div>
                                 <p><FaComments /></p>
                                 <p><IoIosShareAlt /></p>
