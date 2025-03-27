@@ -1,21 +1,19 @@
+
 import multer from "multer";
 import path from 'path'
 
 
+const storage = multer.diskStorage({
 
-const Storage = multer.diskStorage({
-
-    destination: (req, file, cb) => {
-        cb(null, './postImage');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + path.extname(file.originalname));
+    destination: './postImage',
+    filename: (req,file,cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
     }
+
 })
 
 
-const imageUpload = multer({
-    storage: Storage,
-});
+
+const imageUpload = multer({ storage})
 
 export default imageUpload;

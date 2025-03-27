@@ -5,6 +5,8 @@ import imageUpload from "../middleware/postMulter.js";
 import path from 'path'
 import fs from 'fs'
 import { toggleLikePost } from "../likeController/likesController.js";
+import uploadVideo from "../middleware/postVideoMulter.js";
+import postVideo from "../models/Video.js";
 
 const router = express.Router();
 
@@ -22,10 +24,8 @@ router.post('/create', authenticatedToken, imageUpload.single('image'), async (r
             userId,
             image,
         });
-
         await post.save();
         res.status(200).json({ message: "Posted succesfully", post });
-
     } catch (error) {
         res.status(500).json({ message: "faild to post", error: error.message })
     };
@@ -33,51 +33,37 @@ router.post('/create', authenticatedToken, imageUpload.single('image'), async (r
 
 // fetch all the post of perticuler user
 router.get('/user-posts', authenticatedToken, async (req, res) => {
-
     try {
         const userId = req.userId;
-
         const posts = await Post.find({ userId });
-
         if (!posts || posts.length === 0) return res.status(400).json({ message: "No post yet" });
-
         res.status(200).json({ message: "Fetch succesfully", posts })
     } catch (error) {
         res.status(500).json({ message: "Faild to fetch ", error: error.message })
     }
 })
 
-
-
 // Delete post 
 router.delete('/delete', async (req, res) => {
-
     try {
 
         const { id } = req.body;
-
-
         const posts = await Post.findById(id);
-        // delete the image 
 
+        // delete the image 
         const imagePath = path.join('postImage', posts.image);
 
         if (fs.existsSync(imagePath)) {
             fs.unlinkSync(imagePath)
         }
-
-
         // find the post
         await Post.findByIdAndDelete(id)
-
         res.status(200).json({ message: "Post Deleted successfully" })
-
     } catch (error) {
         res.status(500).json({ message: "faild to delete post", error: error.message })
     }
 
 })
-
 
 // fetch all the post 
 router.get('/all-posts', async (req, res) => {
@@ -89,10 +75,25 @@ router.get('/all-posts', async (req, res) => {
     }
 })
 
-
 // Route for liking/unliking a post
 router.put('/like/:postId', authenticatedToken, toggleLikePost);
 
-
+// post Video routes
+router.post('/uploadVideo', authenticatedToken, uploadVideo.single('video'), async (req, res) => {
+    try {
+        const { header } = req.body;
+        const video = req.file ? req.file.filename : null;
+        const userId = req.userId; // get the userid from the authenticated token
+        const newVideo = new postVideo({
+            header,
+            userId,
+            video,
+        });
+        await newVideo.save();
+        res.status(200).json({ message: "Posted succesfully", newVideo });
+    } catch (error) {
+        res.status(500).json({ message: "faild to post", error: error.message })
+    };
+})
 
 export default router;
