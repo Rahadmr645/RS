@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/StoreContext'
 import Posts from '../Posts/Posts';
-import Navbar from '../Navbar/Navbar'
+// import Navbar from '../Navbar/Navbar'
 import styles from './Dashboard.module.css'
 import SideNav from '../SideNav/SideNav';
+import { Route, Routes } from 'react-router-dom';
 
 const Dashboard = () => {
   const { decodeToken } = useContext(Context);
@@ -24,13 +25,15 @@ const Dashboard = () => {
   }
 
   return (
+
     <div className={styles.dashboardContainer}>
-      <Navbar />
       <div className={styles.itemContainer}>
         <SideNav className={styles.left} />
-        {/* <button onClick={logout} >Logout</button> */}
-        {/* <p>{userData?.name}</p> */}
-        <Posts  className={styles.middle} />
+        {/* routes section */}
+        <Routes>
+          <Route path='/dashbord' element={<Posts className={styles.middle} />} />
+        </Routes>
+
         <div className={styles.right}></div>
       </div>
     </div>

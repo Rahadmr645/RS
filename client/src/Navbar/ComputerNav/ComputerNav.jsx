@@ -13,6 +13,7 @@ import { CgProfile } from "react-icons/cg";
 import { GiKnockedOutStars } from "react-icons/gi";
 import { Context } from '../../context/StoreContext';
 import PostForm from '../../PostForm/PostForm';
+import { Link } from 'react-router-dom';
 
 const ComputerNav = () => {
 
@@ -34,11 +35,11 @@ const ComputerNav = () => {
                         </div>
                     </div>
                     <div className={styles.middleContainer}>
-                        <p onClick={() => setSelect('home')} className={select === 'home' ? styles.select : ''}   ><MdHomeFilled /></p>
+                        <Link to='/' > <p onClick={() => setSelect('home')} className={select === 'home' ? styles.select : ''}   ><MdHomeFilled /></p> </Link>
                         <p onClick={() => setSelect('people')} className={select === 'people' ? styles.select : ''}  ><IoPeopleOutline /></p>
-                        <p onClick={() => setSelect('video')} className={select === 'video' ? styles.select : ''}  ><MdOndemandVideo /></p>
-                        <p onClick={() => setSelect('page')} className={select === 'page' ? styles.select : ''}  ><SiHomeassistantcommunitystore /></p>
-                        <p onClick={() => setSelect('stars')} className={select === 'stars' ? styles.select : ''}  ><GiKnockedOutStars /></p>
+                        <Link to="/video" >  <p onClick={() => setSelect('video')} className={select === 'video' ? styles.select : ''}  ><MdOndemandVideo /></p> </Link>
+                        <Link to='/page'>  <p onClick={() => setSelect('page')} className={select === 'page' ? styles.select : ''}  ><SiHomeassistantcommunitystore /></p> </Link>
+                        <Link to='stars' >  <p onClick={() => setSelect('stars')} className={select === 'stars' ? styles.select : ''}  ><GiKnockedOutStars /></p> </Link>
                     </div>
                     <div className={styles.rightContainer}>
                         <p><TbGridDots /></p>

@@ -88,14 +88,14 @@ export const ContextProvider = ({ children }) => {
                 }
 
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard');
+                navigate('/dashbord');
             } else {
                 response = await axios.post(`${URL}/api/user/login`, {
                     email: userFormData.email,
                     password: userFormData.password,
                 });
                 alert(response.data.message);
-                navigate('/dashboard');
+                navigate('/');
             }
         } catch (error) {
             alert(error.response?.data?.message || 'An error occurred');
@@ -180,7 +180,7 @@ export const ContextProvider = ({ children }) => {
             setShowPostForm(false);
 
             setTimeout(() => {
-                navigate('/dashboard');
+                navigate('/');
             }, 100);  // Add a small delay before navigation
 
 
